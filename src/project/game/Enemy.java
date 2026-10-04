@@ -3,12 +3,20 @@ package project.game;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 public class Enemy {
+    private static final int WALK_FRAME_COUNT = 8;
+    private static final SpriteAnimation NORMAL_SPRITE = SpriteAnimation.load("/project/game/Monster/Normal/Slime_1.png", WALK_FRAME_COUNT);
+    private static final SpriteAnimation FAST_SPRITE = SpriteAnimation.load("/project/game/Monster/Fast/kai.png", WALK_FRAME_COUNT);
+    private static final SpriteAnimation TANK_SPRITE = SpriteAnimation.load("/project/game/Monster/Tank/South-East_4.png", WALK_FRAME_COUNT);
+    private static final SpriteAnimation BOSS_SPRITE = SpriteAnimation.load("/project/game/Monster/Boss/South-East_10.png", WALK_FRAME_COUNT);
+
     public double x, y;
     public int size, hp, maxHp, damage, scoreValue;
     public double speed;
     public EnemyType type;
+    private boolean facingLeft;
 
     public Enemy(double x, double y, EnemyType type, int playerLevel) {
         this.x = x;
@@ -50,6 +58,7 @@ public class Enemy {
     }
 
     public void update(double targetX, double targetY) {
+        facingLeft = targetX < x;
         double angle = Math.atan2(targetY - y, targetX - x);
         x += Math.cos(angle) * speed;
         y += Math.sin(angle) * speed;
@@ -62,17 +71,15 @@ public class Enemy {
     public void draw(Graphics2D g, double camX, double camY) {
         int screenX = (int) (x - camX);
         int screenY = (int) (y - camY);
-
-        switch (type) {
-            case FAST: g.setColor(Color.ORANGE); break;
-            case TANK: g.setColor(new Color(138, 43, 226)); break;
-            case BOSS: g.setColor(Color.YELLOW); break;
-            case NORMAL: default: g.setColor(Color.RED); break;
+        BufferedImage frame = getSprite().frameAt(System.currentTimeMillis(), 110);
+        if (facingLeft) {
+            g.drawImage(frame, screenX + size / 2, screenY - size / 2,
+                    screenX - size / 2, screenY + size / 2,
+                    0, 0, frame.getWidth(), frame.getHeight(), null);
+        } else {
+            g.drawImage(frame, screenX - size / 2, screenY - size / 2,
+                    size, size, null);
         }
-
-        g.fillRect(screenX - size / 2, screenY - size / 2, size, size);
-        g.setColor(Color.BLACK);
-        g.drawRect(screenX - size / 2, screenY - size / 2, size, size);
 
         if (type == EnemyType.BOSS) {
             g.setColor(Color.RED);
@@ -81,6 +88,16 @@ public class Enemy {
             g.fillRect(screenX - 30, screenY - size / 2 - 12, (int) (60 * ((double) hp / maxHp)), 6);
             g.setColor(Color.WHITE);
             g.drawRect(screenX - 30, screenY - size / 2 - 12, 60, 6);
+        }
+    }
+
+    private SpriteAnimation getSprite() {
+        switch (type) {
+            case FAST: return FAST_SPRITE;
+            case TANK: return TANK_SPRITE;
+            case BOSS: return BOSS_SPRITE;
+            case NORMAL:
+            default: return NORMAL_SPRITE;
         }
     }
 }

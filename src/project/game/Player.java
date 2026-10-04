@@ -3,8 +3,13 @@ package project.game;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 public class Player {
+    private static final int WALK_FRAME_COUNT = 8;
+    private static final SpriteAnimation IDLE_SPRITE = SpriteAnimation.load("/project/game/Monster/Player/ass center.png", WALK_FRAME_COUNT);
+    private static final SpriteAnimation WALK_SPRITE = SpriteAnimation.load("/project/game/Monster/Player/ass walk.png", WALK_FRAME_COUNT);
+
     public double x, y;
     public int size = 26;
     public double speed = 4.2;
@@ -13,6 +18,7 @@ public class Player {
 
     public double lastDirX = 1.0;
     public double lastDirY = 0.0;
+    private boolean moving;
     
     public double attackCooldownMultiplier = 1.0;
 
@@ -26,6 +32,7 @@ public class Player {
     }
 
     public void move(int dx, int dy) {
+        moving = dx != 0 || dy != 0;
         if (dx != 0 || dy != 0) {
             double len = Math.hypot(dx, dy);
             lastDirX = dx / len;
@@ -49,17 +56,22 @@ public class Player {
     public void draw(Graphics2D g, double camX, double camY) {
         int screenX = (int) (x - camX);
         int screenY = (int) (y - camY);
-
-        // ให้ตัวละครกระพริบสีแดงเมื่ออยู่ในช่วงอมตะ
         boolean isInvincible = (System.currentTimeMillis() - lastDamageTime) < invincibilityDuration;
-        if (isInvincible && (System.currentTimeMillis() / 100) % 2 == 0) {
-            g.setColor(Color.RED);
+        long currentTime = System.currentTimeMillis();
+        SpriteAnimation sprite = moving ? WALK_SPRITE : IDLE_SPRITE;
+        BufferedImage frame = sprite.frameAt(currentTime, moving ? 100 : 180);
+        boolean flash = isInvincible && (currentTime / 100) % 2 == 0;
+        if (lastDirX < 0) {
+            g.drawImage(frame, screenX + size / 2, screenY - size / 2,
+                    screenX - size / 2, screenY + size / 2,
+                    0, 0, frame.getWidth(), frame.getHeight(), null);
         } else {
-            g.setColor(Color.GREEN);
+            g.drawImage(frame, screenX - size / 2, screenY - size / 2,
+                    size, size, null);
         }
-
-        g.fillOval(screenX - size / 2, screenY - size / 2, size, size);
-        g.setColor(Color.WHITE);
-        g.drawOval(screenX - size / 2, screenY - size / 2, size, size);
+        if (flash) {
+            g.setColor(new Color(255, 0, 0, 110));
+            g.fillOval(screenX - size / 2, screenY - size / 2, size, size);
+        }
     }
 }
