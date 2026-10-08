@@ -22,9 +22,6 @@ public class VampireSurvivorsGame extends JPanel implements Runnable, KeyListene
 
     private static final int SCREEN_WIDTH = 800;
     private static final int SCREEN_HEIGHT = 600;
-    private static final String MAP_BACKGROUND_RESOURCE =
-            "/project/game/Map/b574dbba-8e04-40a2-a1a2-987a7a3e938d.jpg";
-
     private Thread gameThread;
     private boolean running = false;
     private final int FPS = 60;
@@ -32,7 +29,8 @@ public class VampireSurvivorsGame extends JPanel implements Runnable, KeyListene
 
     private BufferedImage dbImage;
     private Graphics2D dbg;
-    private final BufferedImage mapBackground = loadMapBackground();
+    private final BufferedImage mapBackground;
+    private final Player.CharacterType characterType;
 
     private final Set<Integer> activeKeys = new HashSet<>();
 
@@ -58,6 +56,12 @@ public class VampireSurvivorsGame extends JPanel implements Runnable, KeyListene
     private int score = 0;
 
     public VampireSurvivorsGame() {
+        this(Player.CharacterType.SURVIVOR, "/project/game/Map/forest.jpg");
+    }
+
+    public VampireSurvivorsGame(Player.CharacterType characterType, String mapBackgroundResource) {
+        this.characterType = characterType;
+        mapBackground = loadMapBackground(mapBackgroundResource);
         setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         setFocusable(true);
         requestFocus();
@@ -66,7 +70,7 @@ public class VampireSurvivorsGame extends JPanel implements Runnable, KeyListene
     }
 
     private void initGame() {
-        player = new Player(0, 0);
+        player = new Player(0, 0, characterType);
         enemies.clear();
         gems.clear();
         visualEffects.clear();
@@ -295,20 +299,20 @@ public class VampireSurvivorsGame extends JPanel implements Runnable, KeyListene
         }
     }
 
-    private static BufferedImage loadMapBackground() {
+    private static BufferedImage loadMapBackground(String resourcePath) {
         try {
-            var resource = VampireSurvivorsGame.class.getResource(MAP_BACKGROUND_RESOURCE);
+            var resource = VampireSurvivorsGame.class.getResource(resourcePath);
             if (resource == null) {
-                throw new IllegalStateException("Unable to find map background: " + MAP_BACKGROUND_RESOURCE);
+                throw new IllegalStateException("Unable to find map background: " + resourcePath);
             }
 
             BufferedImage image = ImageIO.read(resource);
             if (image == null) {
-                throw new IllegalStateException("Unsupported map background: " + MAP_BACKGROUND_RESOURCE);
+                throw new IllegalStateException("Unsupported map background: " + resourcePath);
             }
             return image;
         } catch (IOException exception) {
-            throw new IllegalStateException("Unable to load map background: " + MAP_BACKGROUND_RESOURCE, exception);
+            throw new IllegalStateException("Unable to load map background: " + resourcePath, exception);
         }
     }
 

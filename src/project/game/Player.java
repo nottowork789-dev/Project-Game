@@ -7,8 +7,42 @@ import java.awt.image.BufferedImage;
 
 public class Player {
     private static final int WALK_FRAME_COUNT = 8;
-    private static final SpriteAnimation IDLE_SPRITE = SpriteAnimation.load("/project/game/Monster/Player/ass center.png", WALK_FRAME_COUNT);
-    private static final SpriteAnimation WALK_SPRITE = SpriteAnimation.load("/project/game/Monster/Player/ass walk.png", WALK_FRAME_COUNT);
+
+    public enum CharacterType {
+        SURVIVOR(
+                "Adventurer",
+                "/project/game/Monster/Player/ass center.png",
+                "/project/game/Monster/Player/ass walk.png"),
+        IRON_GUARDIAN(
+                "Iron Guardian",
+                "/project/game/Monster/Player/ironmancenter.png",
+                "/project/game/Monster/Player/ironmanwalk.png");
+
+        private final String displayName;
+        private final String idleSpriteResource;
+        private final String walkSpriteResource;
+
+        CharacterType(String displayName, String idleSpriteResource, String walkSpriteResource) {
+            this.displayName = displayName;
+            this.idleSpriteResource = idleSpriteResource;
+            this.walkSpriteResource = walkSpriteResource;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        String getIdleSpriteResource() {
+            return idleSpriteResource;
+        }
+
+        String getWalkSpriteResource() {
+            return walkSpriteResource;
+        }
+    }
+
+    private final SpriteAnimation idleSprite;
+    private final SpriteAnimation walkSprite;
 
     public double x, y;
     public int size = 80;
@@ -27,8 +61,14 @@ public class Player {
     public final long invincibilityDuration = 450; // 0.45 วินาที
 
     public Player(double x, double y) {
+        this(x, y, CharacterType.SURVIVOR);
+    }
+
+    public Player(double x, double y, CharacterType characterType) {
         this.x = x;
         this.y = y;
+        idleSprite = SpriteAnimation.load(characterType.getIdleSpriteResource(), WALK_FRAME_COUNT);
+        walkSprite = SpriteAnimation.load(characterType.getWalkSpriteResource(), WALK_FRAME_COUNT);
     }
 
     public void move(int dx, int dy) {
@@ -58,7 +98,7 @@ public class Player {
         int screenY = (int) (y - camY);
         boolean isInvincible = (System.currentTimeMillis() - lastDamageTime) < invincibilityDuration;
         long currentTime = System.currentTimeMillis();
-        SpriteAnimation sprite = moving ? WALK_SPRITE : IDLE_SPRITE;
+        SpriteAnimation sprite = moving ? walkSprite : idleSprite;
         BufferedImage frame = sprite.frameAt(currentTime, moving ? 100 : 180);
         boolean flash = isInvincible && (currentTime / 100) % 2 == 0;
         if (lastDirX < 0) {
