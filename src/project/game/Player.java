@@ -13,8 +13,8 @@ public class Player {
     public double x, y;
     public int size = 26;
     public double speed = 4.2;
-    public int hp = 100;
-    public int maxHp = 100;
+    public int hp = 80;
+    public int maxHp = 80;
 
     public double lastDirX = 1.0;
     public double lastDirY = 0.0;
@@ -24,7 +24,7 @@ public class Player {
 
     // เพิ่มตัวแปรเช็คการอมตะชั่วขณะเพื่อแก้ Bug โดนชนทีเดียวตาย
     public long lastDamageTime = 0;
-    public final long invincibilityDuration = 500; // 0.5 วินาที
+    public final long invincibilityDuration = 450; // 0.45 วินาที
 
     public Player(double x, double y) {
         this.x = x;

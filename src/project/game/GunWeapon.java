@@ -49,10 +49,10 @@ public class GunWeapon extends Weapon {
                 double dy = target.y - player.y;
                 double len = Math.hypot(dx, dy);
 
-                if (len > 0) {
+                if (len > 0 && len <= 520) {
                     double dirX = dx / len;
                     double dirY = dy / len;
-                    int dmg = 15 + (level * 5);
+                    int dmg = 10 + (level * 4);
 
                     // นัดที่ 1
                     bullets.add(new Bullet(player.x, player.y, dirX, dirY, dmg));

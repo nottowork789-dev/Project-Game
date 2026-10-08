@@ -23,8 +23,8 @@ public class SwordWeapon extends Weapon {
         long effectiveCooldown = (long) (baseCooldown * player.attackCooldownMultiplier);
 
         if (currentTime - lastAttackTime >= effectiveCooldown) {
-            attackRadius = 80 + (level * 15);
-            int damage = 25 + (level * 12);
+            attackRadius = 62 + (level * 10);
+            int damage = 18 + (level * 10);
 
             // ทิศทางที่ผู้เล่นกำลังหันไป (Normalized Vector)
             double dirX = player.lastDirX;

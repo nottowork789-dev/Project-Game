@@ -147,15 +147,15 @@ public class VampireSurvivorsGame extends JPanel implements Runnable, KeyListene
             weapon.update(player, enemies, visualEffects, currentTime);
         }
 
+        spawnInterval = Math.max(260L, 700L - (elapsedSeconds * 8L) - (levelManager.getLevel() * 20L));
         if (currentTime - lastSpawnTime >= spawnInterval) {
             spawnEnemyAroundPlayer();
             lastSpawnTime = currentTime;
         }
 
-        long currentMinute = elapsedSeconds / 60;
-        if (currentMinute > lastBossSpawnMinute) {
-            spawnBossAroundPlayer(currentMinute);
-            lastBossSpawnMinute = currentMinute;
+        if (elapsedSeconds >= lastBossSpawnMinute + getBossSpawnIntervalSeconds()) {
+            spawnBossAroundPlayer(elapsedSeconds / 60);
+            lastBossSpawnMinute = elapsedSeconds;
         }
 
         Iterator<VisualEffect> vIt = visualEffects.iterator();
@@ -218,19 +218,33 @@ public class VampireSurvivorsGame extends JPanel implements Runnable, KeyListene
     }
 
     private void spawnEnemyAroundPlayer() {
-        double spawnDistance = 500 + Math.random() * 100;
-        double angle = Math.random() * Math.PI * 2;
+        int spawnCount = 1 + (levelManager.getLevel() / 4);
+        spawnCount = Math.min(spawnCount, 4);
 
-        double ex = player.x + Math.cos(angle) * spawnDistance;
-        double ey = player.y + Math.sin(angle) * spawnDistance;
+        for (int i = 0; i < spawnCount; i++) {
+            double spawnDistance = 500 + Math.random() * 120;
+            double angle = Math.random() * Math.PI * 2;
 
+            double ex = player.x + Math.cos(angle) * spawnDistance;
+            double ey = player.y + Math.sin(angle) * spawnDistance;
+
+            EnemyType type = getRandomEnemyType();
+            enemies.add(new Enemy(ex, ey, type, levelManager.getLevel()));
+        }
+    }
+
+    private EnemyType getRandomEnemyType() {
         double rand = Math.random();
-        EnemyType type;
-        if (rand < 0.60) type = EnemyType.NORMAL;
-        else if (rand < 0.85) type = EnemyType.FAST;
-        else type = EnemyType.TANK;
+        int level = levelManager.getLevel();
 
-        enemies.add(new Enemy(ex, ey, type, levelManager.getLevel()));
+        if (rand < 0.30) return EnemyType.NORMAL;
+        if (rand < 0.55) return EnemyType.FAST;
+        if (rand < 0.90) return EnemyType.TANK;
+        return EnemyType.TANK;
+    }
+
+    private long getBossSpawnIntervalSeconds() {
+        return Math.max(25L, 60L - (levelManager.getLevel() * 2L));
     }
 
     private void spawnBossAroundPlayer(long bossWave) {
@@ -241,7 +255,7 @@ public class VampireSurvivorsGame extends JPanel implements Runnable, KeyListene
         double ey = player.y + Math.sin(angle) * spawnDistance;
 
         Enemy boss = new Enemy(ex, ey, EnemyType.BOSS, levelManager.getLevel());
-        boss.hp += (int) (bossWave * 30);
+        boss.hp += (int) (bossWave * 35);
         boss.maxHp = boss.hp;
         enemies.add(boss);
     }

@@ -7,51 +7,82 @@ import java.awt.image.BufferedImage;
 
 public class Enemy {
     private static final int WALK_FRAME_COUNT = 8;
-    private static final SpriteAnimation NORMAL_SPRITE = SpriteAnimation.load("/project/game/Monster/Normal/Slime_1.png", WALK_FRAME_COUNT);
-    private static final SpriteAnimation FAST_SPRITE = SpriteAnimation.load("/project/game/Monster/Fast/kai.png", WALK_FRAME_COUNT);
+    private static final SpriteAnimation[] NORMAL_SPRITES = new SpriteAnimation[] {
+        SpriteAnimation.load("/project/game/Monster/Normal/Slime_1.png", WALK_FRAME_COUNT),
+        SpriteAnimation.load("/project/game/Monster/Normal/dog.png", 1),
+        SpriteAnimation.load("/project/game/Monster/Normal/meow.png", 1),
+        SpriteAnimation.load("/project/game/Monster/Normal/yel.png", 1),
+        SpriteAnimation.load("/project/game/Monster/Normal/South-East.png", 1)
+    };
+    private static final SpriteAnimation[] FAST_SPRITES = new SpriteAnimation[] {
+        SpriteAnimation.load("/project/game/Monster/Fast/kai.png", WALK_FRAME_COUNT),
+        SpriteAnimation.load("/project/game/Monster/Fast/South-East_3.png", 1),
+        SpriteAnimation.load("/project/game/Monster/Fast/South-East_7.png", 1)
+    };
     private static final SpriteAnimation TANK_SPRITE = SpriteAnimation.load("/project/game/Monster/Tank/South-East_4.png", WALK_FRAME_COUNT);
-    private static final SpriteAnimation BOSS_SPRITE = SpriteAnimation.load("/project/game/Monster/Boss/South-East_10.png", WALK_FRAME_COUNT);
+    private static final SpriteAnimation[] BOSS_SPRITES = new SpriteAnimation[] {
+        SpriteAnimation.load("/project/game/Monster/Boss/South-East_10.png", WALK_FRAME_COUNT),
+        SpriteAnimation.load("/project/game/Monster/Boss/dragon_1.png", 1),
+        SpriteAnimation.load("/project/game/Monster/Boss/Ogre.png", 1),
+        SpriteAnimation.load("/project/game/Monster/Boss/Skeleton.png", 1)
+    };
 
     public double x, y;
     public int size, hp, maxHp, damage, scoreValue;
     public double speed;
     public EnemyType type;
+    private final SpriteAnimation sprite;
     private boolean facingLeft;
 
     public Enemy(double x, double y, EnemyType type, int playerLevel) {
         this.x = x;
         this.y = y;
         this.type = type;
+        this.sprite = selectSprite(type);
 
         switch (type) {
             case FAST:
                 this.size = 18;
-                this.hp = 1 + (playerLevel / 3);
-                this.speed = 2.4;
-                this.damage = 1;
-                this.scoreValue = 15;
+                this.hp = 3 + (playerLevel / 2);
+                this.speed = 3.1;
+                this.damage = 3;
+                this.scoreValue = 20;
                 break;
             case TANK:
                 this.size = 32;
+                this.hp = 10 + playerLevel * 2;
+                this.speed = 1.0;
+                this.damage = 4;
+                this.scoreValue = 40;
+                break;
+            case BERSERK:
+                this.size = 24;
                 this.hp = 5 + playerLevel;
-                this.speed = 0.8;
-                this.damage = 2;
-                this.scoreValue = 25;
+                this.speed = 2.5;
+                this.damage = 3;
+                this.scoreValue = 30;
+                break;
+            case SHADOW:
+                this.size = 20;
+                this.hp = 4 + playerLevel;
+                this.speed = 2.2;
+                this.damage = 4;
+                this.scoreValue = 35;
                 break;
             case BOSS:
                 this.size = 52;
-                this.hp = 35 + (playerLevel * 5);
-                this.speed = 1.0;
-                this.damage = 3;
-                this.scoreValue = 200;
+                this.hp = 60 + (playerLevel * 10);
+                this.speed = 1.3;
+                this.damage = 7;
+                this.scoreValue = 240;
                 break;
             case NORMAL:
             default:
                 this.size = 22;
-                this.hp = 2 + (playerLevel / 2);
-                this.speed = 1.4;
-                this.damage = 1;
-                this.scoreValue = 10;
+                this.hp = 4 + (playerLevel / 2);
+                this.speed = 1.9;
+                this.damage = 3;
+                this.scoreValue = 12;
                 break;
         }
         this.maxHp = this.hp;
@@ -91,13 +122,24 @@ public class Enemy {
         }
     }
 
-    private SpriteAnimation getSprite() {
+    private SpriteAnimation selectSprite(EnemyType type) {
         switch (type) {
-            case FAST: return FAST_SPRITE;
-            case TANK: return TANK_SPRITE;
-            case BOSS: return BOSS_SPRITE;
+            case FAST:
+                return FAST_SPRITES[(int) (Math.random() * FAST_SPRITES.length)];
+            case TANK:
+                return TANK_SPRITE;
+            case BERSERK:
+            case SHADOW:
+                return FAST_SPRITES[(int) (Math.random() * FAST_SPRITES.length)];
+            case BOSS:
+                return BOSS_SPRITES[(int) (Math.random() * BOSS_SPRITES.length)];
             case NORMAL:
-            default: return NORMAL_SPRITE;
+            default:
+                return NORMAL_SPRITES[(int) (Math.random() * NORMAL_SPRITES.length)];
         }
+    }
+
+    private SpriteAnimation getSprite() {
+        return sprite;
     }
 }

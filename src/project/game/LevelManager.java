@@ -37,7 +37,7 @@ public class LevelManager {
             xpToNextLevel = (int) (xpToNextLevel * 1.5);
 
             if (player != null) {
-                player.hp = Math.min(player.hp + 20, player.maxHp);
+                player.hp = Math.min(player.hp + 10, player.maxHp);
             }
 
             // สุ่มของ 3 ชิ้นขึ้นมาเสนอให้ผู้เล่น

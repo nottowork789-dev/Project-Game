@@ -31,14 +31,14 @@ public class LaserWeapon extends Weapon {
                 double dy = target.y - player.y;
                 double len = Math.hypot(dx, dy);
 
-                if (len > 0) {
-                    double laserRange = 400 + (level * 50);
+                if (len > 0 && len <= 420) {
+                    double laserRange = 260 + (level * 28);
                     startX = player.x;
                     startY = player.y;
                     endX = player.x + (dx / len) * laserRange;
                     endY = player.y + (dy / len) * laserRange;
 
-                    int damage = 25 + (level * 10);
+                    int damage = 18 + (level * 8);
                     Line2D laserLine = new Line2D.Double(startX, startY, endX, endY);
 
                     // ทำดาเมจศัตรูทุกตัวที่ตัดผ่านเส้นเลเซอร์

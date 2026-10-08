@@ -18,7 +18,7 @@ public class FireStaffWeapon extends Weapon {
     private static class Fireball {
         double x, y, dirX, dirY;
         double speed = 7.0;
-        int damage = 30;
+        int damage = 1;
         int explosionRadius = 70;
 
         Fireball(double x, double y, double dirX, double dirY, int damage, int radius) {
@@ -44,9 +44,9 @@ public class FireStaffWeapon extends Weapon {
                 double dy = target.y - player.y;
                 double len = Math.hypot(dx, dy);
 
-                if (len > 0) {
-                    int dmg = 25 + (level * 10);
-                    int radius = 60 + (level * 10);
+                if (len > 0 && len <= 500) {
+                    int dmg = 15 + (level * 7);
+                    int radius = 44 + (level * 7);
                     fireballs.add(new Fireball(player.x, player.y, dx / len, dy / len, dmg, radius));
                 }
             }

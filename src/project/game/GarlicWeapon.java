@@ -20,8 +20,8 @@ public class GarlicWeapon extends Weapon {
         long effectiveInterval = (long) (baseDmgInterval * player.attackCooldownMultiplier);
 
         if (currentTime - lastDmgTime >= effectiveInterval) {
-            double auraRadius = 60 + (level * 15); // รัศมีกว้างขึ้นตามเลเวล
-            int damage = 8 + (level * 5);           // ดาเมจแรงขึ้นตามเลเวล
+            double auraRadius = 46 + (level * 10); // รัศมีกว้างขึ้นตามเลเวลแต่ไม่เกินระยะที่ทำให้กดติด
+            int damage = 6 + (level * 4);           // ดาเมจแรงขึ้นตามเลเวล
 
             for (Enemy enemy : enemies) {
                 // เช็คระยะห่างระหว่างผู้เล่นกับศัตรู

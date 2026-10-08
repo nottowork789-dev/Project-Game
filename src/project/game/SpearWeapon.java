@@ -31,14 +31,14 @@ public class SpearWeapon extends Weapon {
                 double dy = target.y - player.y;
                 double len = Math.hypot(dx, dy);
 
-                if (len > 0) {
-                    double spearLength = 180 + (level * 30);
+                if (len > 0 && len <= 280) {
+                    double spearLength = 120 + (level * 18);
                     startX = player.x;
                     startY = player.y;
                     endX = player.x + (dx / len) * spearLength;
                     endY = player.y + (dy / len) * spearLength;
 
-                    int damage = 35 + (level * 15);
+                    int damage = 22 + (level * 10);
                     Line2D spearLine = new Line2D.Double(startX, startY, endX, endY);
 
                     for (Enemy enemy : enemies) {
