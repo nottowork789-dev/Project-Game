@@ -20,8 +20,8 @@ import javax.swing.JPanel;
 
 public class VampireSurvivorsGame extends JPanel implements Runnable, KeyListener {
 
-    private static final int SCREEN_WIDTH = 800;
-    private static final int SCREEN_HEIGHT = 600;
+    private static final int SCREEN_WIDTH = 900;
+    private static final int SCREEN_HEIGHT = 675;
     private Thread gameThread;
     private boolean running = false;
     private final int FPS = 60;
@@ -348,7 +348,7 @@ public class VampireSurvivorsGame extends JPanel implements Runnable, KeyListene
         String timeStr = String.format("%02d:%02d", minutes, seconds);
         g.setFont(new Font("SansSerif", Font.BOLD, 22));
         g.setColor(Color.YELLOW);
-        g.drawString(timeStr, SCREEN_WIDTH / 2 - 30, 35);
+        drawCentered(g, timeStr, SCREEN_WIDTH / 2, 35);
 
         levelManager.drawLevelUpUI(g, SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -357,12 +357,16 @@ public class VampireSurvivorsGame extends JPanel implements Runnable, KeyListene
             g.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
             g.setColor(Color.RED);
             g.setFont(new Font("SansSerif", Font.BOLD, 48));
-            g.drawString("GAME OVER", SCREEN_WIDTH / 2 - 140, SCREEN_HEIGHT / 2 - 20);
+            drawCentered(g, "GAME OVER", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 20);
             g.setColor(Color.WHITE);
             g.setFont(new Font("SansSerif", Font.PLAIN, 20));
-            g.drawString("Survived Time: " + timeStr, SCREEN_WIDTH / 2 - 95, SCREEN_HEIGHT / 2 + 20);
-            g.drawString("Press 'R' to Restart", SCREEN_WIDTH / 2 - 85, SCREEN_HEIGHT / 2 + 55);
+            drawCentered(g, "Survived Time: " + timeStr, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 20);
+            drawCentered(g, "Press 'R' to Restart", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 55);
         }
+    }
+
+    private static void drawCentered(Graphics2D g, String text, int centerX, int baselineY) {
+        g.drawString(text, centerX - g.getFontMetrics().stringWidth(text) / 2, baselineY);
     }
 
     private void drawToScreen() {

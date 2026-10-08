@@ -19,6 +19,11 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public final class GameStartScreen extends JPanel {
+    private static final int DESIGN_WIDTH = 800;
+    private static final int DESIGN_HEIGHT = 600;
+    private static final int WINDOW_WIDTH = 900;
+    private static final int WINDOW_HEIGHT = 675;
+
     private enum Page {
         START,
         PLAYER,
@@ -51,7 +56,7 @@ public final class GameStartScreen extends JPanel {
 
     public GameStartScreen(BiConsumer<Player.CharacterType, String> onGameStart) {
         this.onGameStart = onGameStart;
-        setPreferredSize(new java.awt.Dimension(800, 600));
+        setPreferredSize(new java.awt.Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         setFocusable(true);
 
         for (int index = 0; index < CHARACTERS.length; index++) {
@@ -64,12 +69,12 @@ public final class GameStartScreen extends JPanel {
         MouseAdapter mouseHandler = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent event) {
-                handleClick(event.getX(), event.getY());
+                handleClick(toDesignX(event.getX()), toDesignY(event.getY()));
             }
 
             @Override
             public void mouseMoved(MouseEvent event) {
-                updateHover(event.getX(), event.getY());
+                updateHover(toDesignX(event.getX()), toDesignY(event.getY()));
             }
         };
         addMouseListener(mouseHandler);
@@ -88,6 +93,7 @@ public final class GameStartScreen extends JPanel {
         Graphics2D g = (Graphics2D) graphics.create();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.scale((double) getWidth() / DESIGN_WIDTH, (double) getHeight() / DESIGN_HEIGHT);
 
         drawBackground(g);
         if (page == Page.START) {
@@ -101,10 +107,10 @@ public final class GameStartScreen extends JPanel {
     }
 
     private void drawBackground(Graphics2D g) {
-        g.drawImage(startBackground, 0, 0, getWidth(), getHeight(), null);
+        g.drawImage(startBackground, 0, 0, DESIGN_WIDTH, DESIGN_HEIGHT, null);
         g.setPaint(new GradientPaint(0, 0, new Color(5, 12, 25, 120),
-                0, getHeight(), new Color(3, 8, 17, 220)));
-        g.fillRect(0, 0, getWidth(), getHeight());
+                0, DESIGN_HEIGHT, new Color(3, 8, 17, 220)));
+        g.fillRect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
     }
 
     private void drawStartPage(Graphics2D g) {
@@ -113,18 +119,18 @@ public final class GameStartScreen extends JPanel {
 
         g.setColor(GOLD);
         g.setFont(new Font("SansSerif", Font.BOLD, 17));
-        drawCentered(g, "SURVIVE THE NIGHT", 800, 170);
+        drawCentered(g, "SURVIVE THE NIGHT", DESIGN_WIDTH / 2, 170);
         g.setColor(Color.WHITE);
         g.setFont(new Font("SansSerif", Font.BOLD, 50));
-        drawCentered(g, "VAMPIRE", 800, 235);
-        drawCentered(g, "SURVIVORS", 800, 290);
+        drawCentered(g, "VAMPIRE", DESIGN_WIDTH / 2, 235);
+        drawCentered(g, "SURVIVORS", DESIGN_WIDTH / 2, 290);
         g.setColor(new Color(223, 230, 242));
         g.setFont(new Font("SansSerif", Font.PLAIN, 17));
-        drawCentered(g, "Choose a hero, choose a map, survive the night!", 800, 333);
+        drawCentered(g, "Choose a hero, choose a map, survive the night!", DESIGN_WIDTH / 2, 333);
         drawPrimaryButton(g, new Rectangle(295, 390, 210, 62), "Start Game");
         g.setColor(new Color(225, 230, 240, 210));
         g.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        drawCentered(g, "Move with W A S D or the arrow keys", 800, 475);
+        drawCentered(g, "Move with W A S D or the arrow keys", DESIGN_WIDTH / 2, 475);
     }
 
     private void drawPlayerPage(Graphics2D g) {
@@ -161,7 +167,7 @@ public final class GameStartScreen extends JPanel {
         int cardWidth = 210;
         int cardHeight = 265;
         int gap = 25;
-        int startX = (getWidth() - (cardWidth * MAPS.length + gap * (MAPS.length - 1))) / 2;
+        int startX = (DESIGN_WIDTH - (cardWidth * MAPS.length + gap * (MAPS.length - 1))) / 2;
         for (int index = 0; index < MAPS.length; index++) {
             Rectangle card = new Rectangle(startX + index * (cardWidth + gap), 200, cardWidth, cardHeight);
             boolean selected = index == selectedMap;
@@ -186,16 +192,16 @@ public final class GameStartScreen extends JPanel {
 
     private void drawHeader(Graphics2D g, String title, String subtitle) {
         g.setColor(new Color(5, 13, 26, 190));
-        g.fillRect(0, 0, getWidth(), 150);
+        g.fillRect(0, 0, DESIGN_WIDTH, 150);
         g.setColor(GOLD);
         g.setFont(new Font("SansSerif", Font.BOLD, 32));
-        drawCentered(g, title, getWidth(), 62);
+        drawCentered(g, title, DESIGN_WIDTH / 2, 62);
         g.setColor(new Color(220, 229, 242));
         g.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        drawCentered(g, subtitle, getWidth(), 98);
+        drawCentered(g, subtitle, DESIGN_WIDTH / 2, 98);
         g.setColor(new Color(255, 255, 255, 160));
         g.setFont(new Font("SansSerif", Font.BOLD, 13));
-        g.drawString(page == Page.PLAYER ? "01 / 02" : "02 / 02", getWidth() - 82, 38);
+        g.drawString(page == Page.PLAYER ? "01 / 02" : "02 / 02", DESIGN_WIDTH - 82, 38);
     }
 
     private void drawCard(Graphics2D g, Rectangle card, boolean selected, boolean hovered) {
@@ -261,7 +267,7 @@ public final class GameStartScreen extends JPanel {
         } else {
             int cardWidth = 210;
             int gap = 25;
-            int startX = (getWidth() - (cardWidth * MAPS.length + gap * (MAPS.length - 1))) / 2;
+            int startX = (DESIGN_WIDTH - (cardWidth * MAPS.length + gap * (MAPS.length - 1))) / 2;
             for (int index = 0; index < MAPS.length; index++) {
                 Rectangle card = new Rectangle(startX + index * (cardWidth + gap), 200, cardWidth, 265);
                 if (card.contains(x, y)) {
@@ -296,7 +302,7 @@ public final class GameStartScreen extends JPanel {
         } else if (page == Page.MAP) {
             int cardWidth = 210;
             int gap = 25;
-            int startX = (getWidth() - (cardWidth * MAPS.length + gap * (MAPS.length - 1))) / 2;
+            int startX = (DESIGN_WIDTH - (cardWidth * MAPS.length + gap * (MAPS.length - 1))) / 2;
             for (int index = 0; index < MAPS.length; index++) {
                 Rectangle card = new Rectangle(startX + index * (cardWidth + gap), 200, cardWidth, 265);
                 if (card.contains(x, y)) {
@@ -312,6 +318,14 @@ public final class GameStartScreen extends JPanel {
                 hoveredIndex >= 0 || primaryButtonHovered || backButtonHovered
                         ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR));
         repaint();
+    }
+
+    private int toDesignX(int x) {
+        return x * DESIGN_WIDTH / Math.max(1, getWidth());
+    }
+
+    private int toDesignY(int y) {
+        return y * DESIGN_HEIGHT / Math.max(1, getHeight());
     }
 
     private static BufferedImage loadImage(String resourcePath) {
