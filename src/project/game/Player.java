@@ -11,7 +11,7 @@ public class Player {
     private static final SpriteAnimation WALK_SPRITE = SpriteAnimation.load("/project/game/Monster/Player/ass walk.png", WALK_FRAME_COUNT);
 
     public double x, y;
-    public int size = 26;
+    public int size = 80;
     public double speed = 4.2;
     public int hp = 80;
     public int maxHp = 80;

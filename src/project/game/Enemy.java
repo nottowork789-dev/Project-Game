@@ -9,22 +9,22 @@ public class Enemy {
     private static final int WALK_FRAME_COUNT = 8;
     private static final SpriteAnimation[] NORMAL_SPRITES = new SpriteAnimation[] {
         SpriteAnimation.load("/project/game/Monster/Normal/Slime_1.png", WALK_FRAME_COUNT),
-        SpriteAnimation.load("/project/game/Monster/Normal/dog.png", 1),
-        SpriteAnimation.load("/project/game/Monster/Normal/meow.png", 1),
-        SpriteAnimation.load("/project/game/Monster/Normal/yel.png", 1),
-        SpriteAnimation.load("/project/game/Monster/Normal/South-East.png", 1)
+        SpriteAnimation.load("/project/game/Monster/Normal/dog.png", WALK_FRAME_COUNT),
+        SpriteAnimation.load("/project/game/Monster/Normal/meow.png", WALK_FRAME_COUNT),
+        SpriteAnimation.load("/project/game/Monster/Normal/yel.png", WALK_FRAME_COUNT),
+        SpriteAnimation.load("/project/game/Monster/Normal/South-East.png", WALK_FRAME_COUNT)
     };
     private static final SpriteAnimation[] FAST_SPRITES = new SpriteAnimation[] {
         SpriteAnimation.load("/project/game/Monster/Fast/kai.png", WALK_FRAME_COUNT),
-        SpriteAnimation.load("/project/game/Monster/Fast/South-East_3.png", 1),
-        SpriteAnimation.load("/project/game/Monster/Fast/South-East_7.png", 1)
+        SpriteAnimation.load("/project/game/Monster/Fast/South-East_3.png", WALK_FRAME_COUNT),
+        SpriteAnimation.load("/project/game/Monster/Fast/South-East_7.png", WALK_FRAME_COUNT)
     };
     private static final SpriteAnimation TANK_SPRITE = SpriteAnimation.load("/project/game/Monster/Tank/South-East_4.png", WALK_FRAME_COUNT);
     private static final SpriteAnimation[] BOSS_SPRITES = new SpriteAnimation[] {
         SpriteAnimation.load("/project/game/Monster/Boss/South-East_10.png", WALK_FRAME_COUNT),
-        SpriteAnimation.load("/project/game/Monster/Boss/dragon_1.png", 1),
-        SpriteAnimation.load("/project/game/Monster/Boss/Ogre.png", 1),
-        SpriteAnimation.load("/project/game/Monster/Boss/Skeleton.png", 1)
+        SpriteAnimation.load("/project/game/Monster/Boss/dragon_1.png", WALK_FRAME_COUNT),
+        SpriteAnimation.load("/project/game/Monster/Boss/Ogre.png", WALK_FRAME_COUNT),
+        SpriteAnimation.load("/project/game/Monster/Boss/Skeleton.png", WALK_FRAME_COUNT)
     };
 
     public double x, y;
@@ -42,35 +42,21 @@ public class Enemy {
 
         switch (type) {
             case FAST:
-                this.size = 18;
+                this.size = 100;
                 this.hp = 3 + (playerLevel / 2);
                 this.speed = 3.1;
                 this.damage = 3;
                 this.scoreValue = 20;
                 break;
             case TANK:
-                this.size = 32;
+                this.size = 150;
                 this.hp = 10 + playerLevel * 2;
                 this.speed = 1.0;
                 this.damage = 4;
                 this.scoreValue = 40;
                 break;
-            case BERSERK:
-                this.size = 24;
-                this.hp = 5 + playerLevel;
-                this.speed = 2.5;
-                this.damage = 3;
-                this.scoreValue = 30;
-                break;
-            case SHADOW:
-                this.size = 20;
-                this.hp = 4 + playerLevel;
-                this.speed = 2.2;
-                this.damage = 4;
-                this.scoreValue = 35;
-                break;
             case BOSS:
-                this.size = 52;
+                this.size = 250;
                 this.hp = 60 + (playerLevel * 10);
                 this.speed = 1.3;
                 this.damage = 7;
@@ -78,7 +64,7 @@ public class Enemy {
                 break;
             case NORMAL:
             default:
-                this.size = 22;
+                this.size = 70;
                 this.hp = 4 + (playerLevel / 2);
                 this.speed = 1.9;
                 this.damage = 3;

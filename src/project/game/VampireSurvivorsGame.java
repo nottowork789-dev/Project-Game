@@ -1,6 +1,5 @@
 package project.game;
 
-import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -10,17 +9,21 @@ import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.imageio.ImageIO;
+import javax.swing.JPanel;
 
 public class VampireSurvivorsGame extends JPanel implements Runnable, KeyListener {
 
     private static final int SCREEN_WIDTH = 800;
     private static final int SCREEN_HEIGHT = 600;
-    private static final int TILE_SIZE = 100;
+    private static final String MAP_BACKGROUND_RESOURCE =
+            "/project/game/Map/b574dbba-8e04-40a2-a1a2-987a7a3e938d.jpg";
 
     private Thread gameThread;
     private boolean running = false;
@@ -29,6 +32,7 @@ public class VampireSurvivorsGame extends JPanel implements Runnable, KeyListene
 
     private BufferedImage dbImage;
     private Graphics2D dbg;
+    private final BufferedImage mapBackground = loadMapBackground();
 
     private final Set<Integer> activeKeys = new HashSet<>();
 
@@ -279,20 +283,32 @@ public class VampireSurvivorsGame extends JPanel implements Runnable, KeyListene
     }
 
     private void drawInfiniteMap(Graphics2D g) {
-        g.setColor(new Color(25, 28, 32));
-        g.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        int tileWidth = mapBackground.getWidth();
+        int tileHeight = mapBackground.getHeight();
+        int startX = (int) Math.floor(cameraX / tileWidth) * tileWidth;
+        int startY = (int) Math.floor(cameraY / tileHeight) * tileHeight;
 
-        int startX = (int) Math.floor(cameraX / TILE_SIZE) * TILE_SIZE;
-        int startY = (int) Math.floor(cameraY / TILE_SIZE) * TILE_SIZE;
-
-        g.setColor(new Color(40, 45, 52));
-        for (int x = startX; x < cameraX + SCREEN_WIDTH + TILE_SIZE; x += TILE_SIZE) {
-            for (int y = startY; y < cameraY + SCREEN_HEIGHT + TILE_SIZE; y += TILE_SIZE) {
-                int screenX = (int) (x - cameraX);
-                int screenY = (int) (y - cameraY);
-
-                g.drawRect(screenX, screenY, TILE_SIZE, TILE_SIZE);
+        for (int x = startX; x < cameraX + SCREEN_WIDTH + tileWidth; x += tileWidth) {
+            for (int y = startY; y < cameraY + SCREEN_HEIGHT + tileHeight; y += tileHeight) {
+                g.drawImage(mapBackground, (int) (x - cameraX), (int) (y - cameraY), null);
             }
+        }
+    }
+
+    private static BufferedImage loadMapBackground() {
+        try {
+            var resource = VampireSurvivorsGame.class.getResource(MAP_BACKGROUND_RESOURCE);
+            if (resource == null) {
+                throw new IllegalStateException("Unable to find map background: " + MAP_BACKGROUND_RESOURCE);
+            }
+
+            BufferedImage image = ImageIO.read(resource);
+            if (image == null) {
+                throw new IllegalStateException("Unsupported map background: " + MAP_BACKGROUND_RESOURCE);
+            }
+            return image;
+        } catch (IOException exception) {
+            throw new IllegalStateException("Unable to load map background: " + MAP_BACKGROUND_RESOURCE, exception);
         }
     }
 
