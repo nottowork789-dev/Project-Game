@@ -2,17 +2,39 @@ package project.game;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.imageio.ImageIO;
 
 public class FireStaffWeapon extends Weapon {
+    private static final BufferedImage FIRE_IMAGE = loadFireImage();
     private long lastAttackTime = 0;
     private final long cooldown = 1800;
     private final List<Fireball> fireballs = new ArrayList<>();
 
     public FireStaffWeapon(int level) {
         super("Fire Staff", "Launches a fireball at nearest enemy that explodes on hit", level);
+    }
+
+    private static BufferedImage loadFireImage() {
+        String resourcePath = "/project/game/weapons/Firestaff/Fire.png";
+        var resource = FireStaffWeapon.class.getResource(resourcePath);
+        if (resource == null) {
+            throw new IllegalStateException("Unable to find fire staff image: " + resourcePath);
+        }
+
+        try {
+            BufferedImage image = ImageIO.read(resource);
+            if (image == null) {
+                throw new IllegalStateException("Unsupported fire staff image: " + resourcePath);
+            }
+            return image;
+        } catch (IOException exception) {
+            throw new IllegalStateException("Unable to load fire staff image: " + resourcePath, exception);
+        }
     }
 
     private static class Fireball {
@@ -85,11 +107,10 @@ public class FireStaffWeapon extends Weapon {
 
     @Override
     public void draw(Graphics2D g, Player player, double camX, double camY) {
-        g.setColor(Color.RED);
         for (Fireball f : fireballs) {
             int sx = (int) (f.x - camX);
             int sy = (int) (f.y - camY);
-            g.fillOval(sx - 8, sy - 8, 16, 16);
+            g.drawImage(FIRE_IMAGE, sx - 16, sy - 16, 32, 32, null);
         }
     }
 }
